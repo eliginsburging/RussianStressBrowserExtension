@@ -113,12 +113,22 @@ async function sendmsgContentJS(dataobj) {
 //&&&& BUTTON ON CLICK FUNCTIONALITY &&&&&&&
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
+/** function which clears storage when pressed */
+$(function(){
+    $("#erase").on("click", function(){
+        verify = confirm("Are you sure you wish to clear the stress database? This will erase all stored stresses. This cannot be undone.")
+        if (verify) {
+            chrome.storage.local.clear()
+        }
+    })
+})
 /** function which runs when button is pressed;
  *  takes text input, determines which words may need stress;
  *  queries storage to see if these words have previously been searched, and if so, fetches the results and sends them to content.js;
  *  sends list of any remaining words needing stress to background.js for further processing */
 $(function(){
     $("#submit").on("click", async function(){
+        // chrome.storage.local.clear()
         // ensure there is at least one word requiring stress in the input
         searchtext = $("#russiantext").val()
         var results = validate(searchtext)

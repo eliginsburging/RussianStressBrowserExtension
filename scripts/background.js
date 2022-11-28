@@ -14,8 +14,12 @@ chrome.runtime.onMessage.addListener(
                     last = false
                 }
                 let searchword = request.data[l]
+                var uppercase = false
+                if (isUppercase(searchword)) {
+                    uppercase = true
+                }
                 console.log("searching " + searchword)
-                await getHTML(searchword, last)
+                await getHTML(searchword, uppercase, last)
             }
             
             sendResponse({message: "received background.js"})
@@ -23,18 +27,18 @@ chrome.runtime.onMessage.addListener(
     }
 )
 
-/** takes a string (listitem), a bool (last);
+/** takes a string (listitem), a bool (uppercase), a bool (last);
  * requests the html page for listitem from где-ударение.рф;
  * last simply serves to track the progress through the array
  * of words needing stress (see listener above) as they make their
  * way through the flow of scripts.
  */
-async function getHTML(listitem, last) {
+async function getHTML(listitem, uppercase, last) {
     await sleep(3000);
-    fetch("https://где-ударение.рф/в-слове-" + listitem).then(function(response) {
+    fetch("https://где-ударение.рф/в-слове-" + listitem.toLowerCase()).then(function(response) {
                 return response.text();
             }).then(function(html) {
-                datatosend = {type: "htmlcontent", word: listitem, data: html, last:last}
+                datatosend = {type: "htmlcontent", word: listitem, data: html, uppercase: uppercase, last:last}
                 sendmsgContentJS(datatosend)
             })
 }
@@ -52,4 +56,9 @@ async function sendmsgContentJS(dataobj) {
     chrome.tabs.sendMessage(tab[0].id, dataobj, function(response){
         console.log("sending msg to content.js")
     })
+}
+
+/** Takes a string and returns true if the first letter is capitalized */
+function isUppercase(word) {
+    return /^\p{Lu}/u.test(word);
 }

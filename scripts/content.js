@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener(
             tarword = request.word
             for (j = 0; j < stressOptsHTML.length; j++) {
                 // function will add stress each stress option as applicable
-                stressoptions.push(getStress(stressOptsHTML[j].innerHTML))
+                stressoptions.push(getStress(stressOptsHTML[j].innerHTML, request.uppercase))
             }
             // if no stress options (i.e., word not found), simply add the unstressed word to the stressoptions array
             // otherwise, add the word and stress options to storage
@@ -77,13 +77,31 @@ chrome.runtime.onMessage.addListener(
  */
  function genreplacementtxt() {
     editedtext = searchtext
-    for (k in newstressdict) {
+    //javascript doesn't seem to support word boundaries in regular
+    //expressions for cyrillic words very well. To minimize errors in
+    // global replacement of strings, I opted to replace the longest
+    // words first. I am hoping that adding accents to longer words
+    // might minimize the accidental replacement of substrings, but
+    // this is certainly not a fool proof method. I tried the
+    // string interpolated regexp `\\b${k}\\b` in the new RegExp
+    // below, but that regex failed the .test method on strings
+    // that clearly contained the target word.
+    dictkeys = Object.keys(newstressdict)
+    dictkeys.sort(function(a, b){
+        return b.length - a.length
+    })
+    for (p=0; p < dictkeys.length; p++) {
+        let k = dictkeys[p]
         if (newstressdict[k].length > 1) {
             replacementword = newstressdict[k].join('\\')
         } else {
             replacementword = newstressdict[k][0]
         }
-        editedtext = editedtext.replace(k, replacementword)
+
+        let re = new RegExp(k, 'gu')
+        console.log("replacing " + re + " with " + replacementword)
+        editedtext = editedtext.replace(re, replacementword)
+        console.log(re.test(editedtext))
     }
     
     // $("#russiantextlbl").text("Enter Russian text:")
@@ -165,8 +183,9 @@ stressed_vowels = {
     'ё': 'ё'
 }
 
-/** takes a string - finds the Russian vowel with bold tags around it and replaces that vowel with its stressed counterpart */
-function getStress(HTMLString) {
+/** takes a string and a bool (upper)
+ *  - finds the Russian vowel with bold tags around it and replaces that vowel with its stressed counterpart */
+function getStress(HTMLString, upper) {
     //split string by spaces and find element with <b> tag
     wordlist = HTMLString.split(" ")
     for (i = 0; i < wordlist.length; i++) {
@@ -177,7 +196,13 @@ function getStress(HTMLString) {
             // create new string where this vowel is replaced by version with stress marker
             stressedword = word.slice(0, target) + stressed_vowels[word[target]] + word.slice(target + 1)
             // remove bold tags
-            return stripPunct(stressedword.replace("<b>", "").replace("</b>", ""))
+            returntext = stressedword.replace("<b>", "").replace("</b>", "")
+            if (upper) {
+                return stripPunct(returntext.charAt(0).toUpperCase() + returntext.slice(1))
+            } else {
+                return stripPunct(returntext)
+            }
+            
         }
     }
 }
