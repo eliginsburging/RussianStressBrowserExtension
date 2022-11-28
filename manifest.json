@@ -24,9 +24,6 @@
     "background": {
         "service_worker": "scripts/background.js"
     },
-    "host_permissions": [
-        "https://где-ударение.рф/*"
-    ],
     "permissions": [
         "storage",
         "unlimitedStorage"
