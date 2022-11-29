@@ -71,7 +71,7 @@ function needsStress(word) {
 
 /** takes a string; removes all instances of ,.!?/\'"—«»;:()[]… */
 function stripPunct(word) {
-    return word.replace(/[,.!?/\\\'\"—«»;:\(\)\[\]…]/g,"")
+    return word.replace(/[,.!?/\\\'\"—«»;:\(\)\[\]…\n]/g,"")
 }
 
 /** takes a string; removes all upper case and lower case letters of the English alphabet */
