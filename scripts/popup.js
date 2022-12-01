@@ -210,6 +210,7 @@ chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse){
         if (request.type === "allfinished") {
             $("#russiantextlbl").html("All finished! The results should be visible in the tab which was active when you ran the extension.")
+            $("#russiantext").val("")
         }
     }
 )

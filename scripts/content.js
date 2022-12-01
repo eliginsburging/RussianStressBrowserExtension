@@ -132,7 +132,7 @@ function populateHTML(text, errors) {
     style.setAttribute("integrity", "sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi")
     style.setAttribute("crossorigin", "anonymous")
     var p2 = document.createElement("p")
-    p2.innerHTML = "а́ - я́ - э́ - е́ - и́ - ы́ - у́ - ю́ - о́ - (for ease of copying if inserting stresses mannually)"
+    p2.innerHTML = "а́ - я́ - э́ - е́ - и́ - ы́ - у́ - ю́ - о́ - (for ease of copying if inserting stresses manually)"
     var btncopy = document.createElement("button")
     btncopy.setAttribute("type", "button")
     btncopy.setAttribute("class", "btn btn-primary")
