@@ -71,7 +71,7 @@ function needsStress(word) {
 
 /** takes a string; removes all instances of ,.!?/\'"—«»;:()[]… */
 function stripPunct(word) {
-    return word.replace(/[,.!?/\\\'\"—«»;:\(\)\[\]…\n]/g,"")
+    return word.replace(/[\|,.!?/\\\'\"—«»;:\(\)\[\]…\n]/g,"")
 }
 
 /** takes a string; removes all upper case and lower case letters of the English alphabet */
@@ -211,6 +211,18 @@ chrome.runtime.onMessage.addListener(
         if (request.type === "allfinished") {
             $("#russiantextlbl").html("All finished! The results should be visible in the tab which was active when you ran the extension.")
             $("#russiantext").val("")
+            $("#processing").hide()
         }
+    }
+)
+
+/** listen for processing signal from background js to update the user on what is being processed */
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse){
+        if (request.type === "processing") {
+            $("#processing").show()
+            $("#processing").text("Currently processing: " + request.wordtoshow)
+        }
+        sendResponse("Message from backgorund received at popup")
     }
 )

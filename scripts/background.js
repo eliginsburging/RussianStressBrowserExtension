@@ -38,6 +38,8 @@ async function getHTML(listitem, uppercase, last) {
     fetch("https://где-ударение.рф/в-слове-" + listitem.toLowerCase()).then(function(response) {
                 return response.text();
             }).then(function(html) {
+                datatopopup = {type: "processing", wordtoshow: listitem}
+                chrome.runtime.sendMessage(datatopopup)
                 datatosend = {type: "htmlcontent", word: listitem, data: html, uppercase: uppercase, last:last}
                 sendmsgContentJS(datatosend)
             })

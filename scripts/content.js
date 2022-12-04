@@ -100,7 +100,9 @@ chrome.runtime.onMessage.addListener(
 
         let re = new RegExp(k, 'gu')
         console.log("replacing " + re + " with " + replacementword)
+        console.log("before replacement " + editedtext)
         editedtext = editedtext.replace(re, replacementword)
+        console.log("after replacement " + editedtext)
         console.log(re.test(editedtext))
     }
     
@@ -197,6 +199,7 @@ function getStress(HTMLString, upper) {
             stressedword = word.slice(0, target) + stressed_vowels[word[target]] + word.slice(target + 1)
             // remove bold tags
             returntext = stressedword.replace("<b>", "").replace("</b>", "")
+            // alert(returntext)
             if (upper) {
                 return stripPunct(returntext.charAt(0).toUpperCase() + returntext.slice(1))
             } else {
@@ -208,5 +211,5 @@ function getStress(HTMLString, upper) {
 }
 
 function stripPunct(word) {
-    return word.replace(/[,.!?/\\\'\"—«»;:\(\)\[\]…]/g,"")
+    return word.replace(/[\|,.!?/\\\'\"—«»;:\(\)\[\]…]/g,"")
 }
